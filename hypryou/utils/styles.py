@@ -11,7 +11,7 @@ import typing as t
 import os
 
 
-def apply_css() -> None:
+def apply_css(force_compile: bool = False) -> None:
     if hasattr(Globals, "css_provider"):
         return
 
@@ -32,7 +32,7 @@ def apply_css() -> None:
             logger.debug("Loading css")
         provider.load_from_path(styles_output)
 
-    if os.path.isfile(styles_output):
+    if os.path.isfile(styles_output) and not force_compile:
         try:
             load_css()
             return
@@ -43,7 +43,7 @@ def apply_css() -> None:
 
 def reload_css() -> None:
     if not hasattr(Globals, "css_provider"):
-        return apply_css()
+        return apply_css(force_compile=True)
 
     def on_compile(pid: int, status: int, user_data: None) -> None:
         if __debug__:
